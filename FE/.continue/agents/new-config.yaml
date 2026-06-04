@@ -1,0 +1,31 @@
+name: Ollama Local Config
+version: 1.0.0
+schema: v1
+models:
+  - name: Llama 3.1 8B
+    provider: ollama
+    model: llama3.1:8b
+    roles:
+      - chat
+      - edit
+      - apply
+  - name: Qwen3.5 9B
+    provider: ollama
+    model: qwen3.5:9b
+    roles:
+      - autocomplete
+  - name: Ollama & Gemma 4 Vibe
+    provider: ollama
+    model: gemma4:e4b
+    roles:
+      - chat
+      - edit
+      - apply
+      - summarize
+    capabilities:
+      - tool_use
+  - name: QwenCoder
+    provider: lmstudio
+    model: qwen/qwen3.5-9b
+    roles:
+      - autocomplete
