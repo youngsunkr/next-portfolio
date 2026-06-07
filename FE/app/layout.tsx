@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-
 import Header from "./components/header";
 import Footer from "./components/footer";
+import { ThemeProvider } from 'next-themes'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
+    // 💡 핵심: suppressHydrationWarning을 추가합니다.
+    <html suppressHydrationWarning
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
@@ -36,7 +37,7 @@ export default function RootLayout({
         
         <Header />
 
-        <div>{children}</div>
+        <ThemeProvider>{children}</ThemeProvider>
 
         <Footer />
       </body>
