@@ -13,6 +13,7 @@ export default function Header() {
         <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
           <a className="mr-5 hover:text-gray-900">홈</a>
           <a className="mr-5 hover:text-gray-900">프로젝트</a>
+          <a className="mr-5 hover:text-gray-900">세미나</a>
           <a className="mr-5 hover:text-gray-900">연락처</a>
         </nav>
         {/* <DarkModeToggleButton /> */ }

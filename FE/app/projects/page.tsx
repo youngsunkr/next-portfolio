@@ -1,17 +1,30 @@
 import React from 'react';
 // ⭕ 최상단에 표준 ESM import 구문을 사용합니다.
 import { Client } from '@notionhq/client';
-import { DATABASE_ID, TOKEN } from "../../config";
+
+import { NOTION_DATABASE_ID, NOTION_API_KEY, NOTION_VERSION, NOTION_CONTENT_TYPE } from "../../config";
 
 // posts will be populated at build time by getStaticProps()
 export default async function Projects() {
 
-  const projects = await getNotionProjects();
-  console.log(projects);
-
-  return (
-    <h1>Projects</h1>
-  )
+  try {
+    const projects = await getNotionProjects();
+    console.log("projects: ",projects);
+    return (
+      <div className="p-5">
+        <h1>프로젝트 로드 성공!</h1>
+        {/* 데이터 렌더링 로직 */}
+      </div>
+    );
+  } catch (error: any) {
+    return (
+      <div className="p-5 text-red-500">
+        <h3>데이터 조회 실패 (디버깅 정보):</h3>
+        <p>전송된 ID: {NOTION_DATABASE_ID}</p>
+        <p>에러 메시지: {error.message || JSON.stringify(error)}</p>
+      </div>
+    );
+  }
 }
  
 // This function gets called at build time on server-side.
@@ -19,14 +32,18 @@ export default async function Projects() {
 // direct database queries.getNotionProjects
 export async function getNotionProjects() {
 
-  const notion = new Client({ auth: `${TOKEN}` });
-  console.log("TOKEN: ", `${TOKEN}`);
+  const token = `${NOTION_API_KEY}`;
+  const notion = new Client({ auth: token.trim() });
+  console.log("token: ", `${token}`);
   // replace with your own database ID
-  const databaseId = `${DATABASE_ID}`;
-  console.log("databaseId: ", databaseId);
+  const databaseId = `${NOTION_DATABASE_ID}`;
+  console.log("NOTION_DATABASE_ID: ", databaseId);
   if (!databaseId) {
     throw new Error("NOTION_DATABASE_ID 환경변수가 없습니다.");
   }
+  // 공백이나 줄바꿈 문자, 혹시 모를 중괄호 기호({})가 섞여 들어가는 것을 방지
+  const cleanCleanDatabaseId = databaseId.trim().replace(/[{}]/g, "");
+  
 
   // const filteredRows = async () => {
   //   const response = await notion.databases.query({
@@ -43,23 +60,29 @@ export async function getNotionProjects() {
 
   // Call an external API endpoint to get posts.
   // You can use any data fetching library
-  const res = await fetch(`https://api.notion.com/v1/databases/${DATABASE_ID}/query`, {
+const res = await fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, {
+    method: 'POST',
     headers: {
-      'Authorization': `Bearer ${TOKEN}`,
-      'Notion-Version': '2022-06-28',
-      'Content-Type': 'application/json'
-    }
+      'Authorization': `Bearer ${token}`,
+      'Notion-Version': `${NOTION_VERSION}`,
+      'Content-Type': `${NOTION_CONTENT_TYPE}`
+    },
+    // 실시간 지식을 가져와야 하므로 캐시를 끄거나 짧은 revalidate 설정을 권장합니다.
+    cache: 'no-store', 
   });
-  const results = await res.json()
+  const projects = await res.json()
  
-  console.log("results: ", results);
+  
+  const projectIds = projects?.results.map((project: any) => {
+    const title = project.properties?.Name?.title?.[0]?.plain_text || "제목 없음";
+  });
+  
+  console.log(`projectIds: ${projectIds}`);
 
   // By returning { props: { posts } }, the Blog component
   // will receive `posts` as a prop at build time
   return {
-    props: {
-      results,
-    },
+    props: {projectIds},
   }
 }
 
