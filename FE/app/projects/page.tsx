@@ -4,16 +4,35 @@ import { Client } from '@notionhq/client';
 
 import { NOTION_DATABASE_ID, NOTION_API_KEY, NOTION_VERSION, NOTION_CONTENT_TYPE } from "../../config";
 
+import ProjectItem from './project-item';
+
 // posts will be populated at build time by getStaticProps()
 export default async function Projects() {
 
+  //console.log(projectNames);
+  
   try {
     const projects = await getNotionProjects();
     console.log("projects: ",projects);
+
+    if (!projects || projects.length === 0) {
+        return (
+          <div className="container mx-auto p-8 text-center text-gray-500">
+            <p>조회된 프로젝트 데이터가 없거나 권한 연결이 올바르지 않습니다.</p>
+          </div>
+        );
+      }
+
     return (
       <div className="p-5">
-        <h1>프로젝트 로드 성공!</h1>
+        <h1>총 프로젝트 : {projects.length}</h1>
         {/* 데이터 렌더링 로직 */}
+        {
+          projects?.map((aProject: any) => (
+            <h2 key={aProject.id} className="text-lg font-medium border-b py-2">
+              <ProjectItem key={aProject.id} data={aProject} />
+            </h2>
+        ))}
       </div>
     );
   } catch (error: any) {
@@ -60,6 +79,18 @@ export async function getNotionProjects() {
 
   // Call an external API endpoint to get posts.
   // You can use any data fetching library
+
+const options = {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Notion-Version': `${NOTION_VERSION}`,
+      'Content-Type': `${NOTION_CONTENT_TYPE}`
+    },
+    // 실시간 지식을 가져와야 하므로 캐시를 끄거나 짧은 revalidate 설정을 권장합니다.
+    cache: 'no-store', 
+  };
+
 const res = await fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, {
     method: 'POST',
     headers: {
@@ -69,21 +100,33 @@ const res = await fetch(`https://api.notion.com/v1/databases/${databaseId}/query
     },
     // 실시간 지식을 가져와야 하므로 캐시를 끄거나 짧은 revalidate 설정을 권장합니다.
     cache: 'no-store', 
+    body: JSON.stringify({ 
+      sorts: [
+        {
+          property: "Name",
+          //direction: "asending"
+          direction: "descending"
+        }
+      ],
+      page_size: 100, // 한 번에 최대 100개까지 조회 가능
+    })
   });
   const projects = await res.json()
  
   
-  const projectIds = projects?.results.map((project: any) => {
+  const projectNames = projects?.results.map((project: any) => {
+    //project?.id
+    //console.log("id: ", project?.id);
     const title = project.properties?.Name?.title?.[0]?.plain_text || "제목 없음";
+    //console.log("title: ", title);
+    return title;
   });
-  
-  console.log(`projectIds: ${projectIds}`);
+
+  //console.log(`projectNames: ${projectNames[0]}`);
 
   // By returning { props: { posts } }, the Blog component
   // will receive `posts` as a prop at build time
-  return {
-    props: {projectIds},
-  }
+  return projects?.results || [];
 }
 
 
