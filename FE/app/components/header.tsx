@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import DarkModeToggleButton from "./dark-mode-toggle-button";
 
 export default function Header() {
@@ -11,11 +12,17 @@ export default function Header() {
           <span className="ml-3 text-xl">efonesoft</span>
         </a>
         <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
-          <a className="mr-5 hover:text-gray-900">홈</a>
-          <a className="mr-5 hover:text-gray-900">프로젝트</a>
-          <a className="mr-5 hover:text-gray-900">자기소개서</a>
+          <Link href="/" className="mr-5 hover:text-gray-900">
+            홈
+          </Link>
+          <Link href="/projects" className="mr-5 hover:text-gray-900">
+            프로젝트
+          </Link>
+          <Link href="/about-me" className="mr-5 hover:text-gray-900">
+            자기소개서
+          </Link>
           <a className="mr-5 hover:text-gray-900">세미나</a>
-          <a className="mr-5 hover:text-gray-900">연락처</a>
+          <a href="https://open.kakao.com/o/syn6QVyi" className="mr-5 hover:text-gray-900">연락하기</a>
         </nav>
         {/* <DarkModeToggleButton /> */ }
         <DarkModeToggleButton />
