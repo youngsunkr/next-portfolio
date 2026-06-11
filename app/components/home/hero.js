@@ -11,10 +11,8 @@ export default function Hero() {
         피가 트고 공자는 동산에는 놀이 운다 이것은 풀이 새 불러 것이다 그들은 이것을 그림자는 속에 온갖 이 약동하자 영원히 시대를 이상 희망의 날카로우나 얼음에 위하여서 뼈 천고에 보라 것이 황금 품에 사랑의 튼튼하며 웅대한 투명하되 충분히 쓸쓸하랴 갑 있는가 귀는 빛나는 뿐이다 크고 무한한 용감하고 물방아 지혜는 우리의 얼음과 주는 생생하며 나고 그들의 바이며 인간에 때에 더운지라 두 기관같이 너의 끓는 쓸쓸한 못하다 안고 바로 위하여 그러므로 수 청춘의 가는 원대하고 꽃이 이상의 열락의 품었기 하였으며 없으면 죽음이 천지는 모래뿐일 구하지 착목하는 청춘에서만 살았으며 광야에서.
       </p>
       <div className="flex justify-center">
-        <Link href="/projects">
-				<a className="btn-project">
+        <Link href="/projects" className="btn-project">
 					프로젝트 보러가기
-				</a>
 			</Link>
       </div>
     </div>
