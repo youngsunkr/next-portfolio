@@ -25,7 +25,10 @@ export default async function Projects() {
 
     return (
       <div className="p-5">
-        <h1>총 프로젝트 : {projects.length}</h1>
+        <h1 className="text-4xl font-bold sm:text-6xl">
+          총 프로젝트 :
+          <span className="pl-4 text-blue-500">{projects.length}</span>
+      </h1>
         {/* 데이터 렌더링 로직 */}
         {
           projects?.map((aProject: any) => (
@@ -34,6 +37,7 @@ export default async function Projects() {
             </h2>
         ))}
       </div>
+      
     );
   } catch (error: any) {
     return (
